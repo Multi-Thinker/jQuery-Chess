@@ -9,8 +9,9 @@
   align-self: center;
   vertical-align: center;
 }
-.marked{
+.marker{
   border:1px dashed grey;
+  background: rgba(0,0,255,0.5) !important;
 }
 .range{
   background:rgba(255,0,0,0.7) !important;
