@@ -2,6 +2,9 @@
 .dailoger{
   display:none;
 }
+.hidden{
+  display:none;
+}
 .dailog{
   width:50%;
   height:50%;
@@ -374,13 +377,13 @@
 </div>
 <div class="overlay-dailog dailoger">
  </div>
-<div class="logs">
+<div class="logs hidden">
   Turn the log <a href="javascript:void(0);" class="toggleLogs">Off</a><br>
   <a href="javascript:void(0);" class="ClearLog">Clear Log</a><br>
   Free Move Mode is <a href="javascript:void(0);" class="FreeMoveMode">Off</a><br>
   Marker is <a href="javascript:void(0);" class="MarkerControl">Off</a><br>
 </div>
-<div class="status"></div>
+<div class="status hidden"></div>
 <div class="rendered"></div>
 <script src="./jquery.js"></script>
 <script src="app.js"></script>

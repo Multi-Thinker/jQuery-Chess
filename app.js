@@ -15,11 +15,11 @@ $whiteQueen         = $("img[data-unique='d1']").parent().html();
 $whiteRook          = $("img[data-unique='a1']").parent().html();
 $whiteBishop        = $("img[data-unique='c1']").parent().html();
 $whiteKnight        = $("img[data-unique='b1']").parent().html();
-$blackQueen          = $("img[data-unique='d8']").parent().html();
-$blackRook           = $("img[data-unique='a8']").parent().html();
-$blackBishop         = $("img[data-unique='c8']").parent().html();
-$blackKnight         = $("img[data-unique='b8']").parent().html();
-
+$blackQueen         = $("img[data-unique='d8']").parent().html();
+$blackRook          = $("img[data-unique='a8']").parent().html();
+$blackBishop        = $("img[data-unique='c8']").parent().html();
+$blackKnight        = $("img[data-unique='b8']").parent().html();
+var turn            = "black";
 
 // logging
 function status($str,$force=false){
@@ -54,17 +54,6 @@ $(".MarkerControl").click(function(){
     $(this).html("On");
   }
 });
-
-// $.each(["addClass","removeClass"],function(i,methodname){
-//       var oldmethod = $.fn[methodname];
-//       $.fn[methodname] = function(){
-//             oldmethod.apply( this, arguments );
-//             this.trigger(methodname+"change");
-//             $(".block[data-]")
-//             return this;
-//       }
-// });
-
 //** Functions
 function highlight($line,$position){
   $(".block[data-id='"+$line+"'][data-child='"+$position+"']").addClass("range marked");
@@ -81,7 +70,6 @@ function removeHighlight($id){
    marker_"+$id+"_top_right old_"+$id+"_marker marker_"+$id+"_up marker_"+$id+"_down \
    marker_"+$id+"_bottom_left marker_"+$id+"_bottom_right marker_"+$id+"_top marker_"+$id+"_bottom \
    marker_"+$id+"_left marker_"+$id+"_right ");
-
 }
 $fnOldLine      = 0;
 $fnOldPosition  = 0;
@@ -107,8 +95,14 @@ $fnNewPosition  = 0;
 //Ranges
 // Placing
 function ProcessPlacing($oldPosition,$oldLine, $newPosition,$newLine){
+
   $(".line[data-row='"+$newLine+"'] .block[data-id='"+$newLine+"'][data-child='"+$newPosition+"']").html($(".line[data-row='"+$oldLine+"']").find(".block[data-id='"+$oldLine+"'][data-child='"+$oldPosition+"'] img")[0]).addClass("selected");
+  $id = $(".line[data-row='"+$newLine+"']").find(".block[data-id='"+$newLine+"'][data-child='"+$oldPosition+"'] img").attr("data-unique");
+  console.log($id+$newLine+$newPosition);
+  console.log($(".block[data-id='"+$newLine+"'][data-child='"+$newPosition+"']"));
+  $(".block[data-id='"+$newLine+"'][data-child='"+$newPosition+"']").attr("class","block");
   $(".line[data-row='"+$oldLine+"']").find(".block[data-id='"+$oldLine+"'][data-child='"+$oldPosition+"'] img").remove();
+
   $(".block").removeClass("range");
 }
 function ProcessRange($parent,$child,$line,$direction,$color,$identity,$position,$marker=true){
@@ -166,19 +160,27 @@ function ProcessRange($parent,$child,$line,$direction,$color,$identity,$position
               if(newPawnLine.attr("data-breakdown")==$position){
                 if($i<$loop){ // || rightPawnBlock.find("img").length==1 || leftPawnBlock.find("img").length==1
                   if(rightPawnBlock.find("img").length==1 || $marker==false){
-                    $newTempLineForPawn.find(".block[data-child='"+parseInt($child+1)+"']").addClass($ranger+" marker_"+$id+"_right"+" old_"+$id+"_marker");
+                    if($newTempLineForPawn.find("img[data-id='"+$position+"']").length==0){
+                      $newTempLineForPawn.find(".block[data-child='"+parseInt($child+1)+"']").addClass($ranger+" marker_"+$id+"_right"+" old_"+$id+"_marker");
+                    }
                   }
                   if(leftPawnBlock.find("img").length==1 || $marker==false){
-                    $newTempLineForPawn.find(".block[data-child='"+parseInt($child-1)+"']").addClass($ranger+" marker_"+$id+"_left "+" old_"+$id+"_marker");
+                    if($newTempLineForPawn.find("img[data-id='"+$position+"']").length==0){
+                      $newTempLineForPawn.find(".block[data-child='"+parseInt($child-1)+"']").addClass($ranger+" marker_"+$id+"_left "+" old_"+$id+"_marker");
+                    }
                   }
                 }
               }else{
                 if($i==$loop || rightPawnBlock.find("img").length==1 || leftPawnBlock.find("img").length==1){
                   if(rightPawnBlock.find("img").length==1 || $marker==false){
-                    $newTempLineForPawn.find(".block[data-child='"+parseInt($child+1)+"']").addClass($ranger+" marker_"+$id+"_right "+" old_"+$id+"_marker");
+                      if($newTempLineForPawn.find("img[data-id='"+$position+"']").length==0){
+                        $newTempLineForPawn.find(".block[data-child='"+parseInt($child+1)+"']").addClass($ranger+" marker_"+$id+"_right "+" old_"+$id+"_marker");
+                      }
                   }
                   if(leftPawnBlock.find("img").length==1 || $marker==false){
-                    $newTempLineForPawn.find(".block[data-child='"+parseInt($child-1)+"']").addClass($ranger+" marker_"+$id+"_left "+" old_"+$id+"_marker");
+                    if($newTempLineForPawn.find("img[data-id='"+$position+"']").length==0){
+                      $newTempLineForPawn.find(".block[data-child='"+parseInt($child-1)+"']").addClass($ranger+" marker_"+$id+"_left "+" old_"+$id+"_marker");
+                    }
                   }
                 }
               }
@@ -543,6 +545,11 @@ function ProcessRange($parent,$child,$line,$direction,$color,$identity,$position
   // adding age to marker_
 
   if($marker==false){
+    if(turn=="white"){
+      turn = "black";
+    }else{
+      turn = "white";
+    }
   //  removeHighlight($id);
     //$(".marker_"+$id+",.marker_"+$id+"_right,.marker_"+$id+"_left,.marker_"+$id+"_"+$direction).addClass("old_"+$id+"_marker");
   }
@@ -602,11 +609,14 @@ $(".block").click(function(){
     $oldDirection = $direction;
     $oldIdentity  = $identity;
     $oldPosition  = $position;
-
     $oldChildPosition = $child;
     $oldParentPosition= $parent;
+
+
     if($freeMoveMode==false){
-      ProcessRange($parent,$child,$line,$direction,$color,$identity,$position);
+      if(turn==$color){
+        ProcessRange($parent,$child,$line,$direction,$color,$identity,$position);
+      }
     }else{
       $(".block").addClass("range");
       //$(".FreeMoveMode").click();
